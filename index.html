@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mustafa Dalal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');</script>
+<meta name="description" content="Mustafa Dalal, embedded hardware and electronics engineer in Berlin. PCB design in KiCad, bare-metal STM32 firmware, robotics and avionics projects.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: dark board-render hero, then a parts-list style project index, then one
+   spread per project (media + write-up + spec sheet), closing with experience, skills, contact. */
+:root {
+  --paper: #f2f5f3;
+  --panel: #fbfcfb;
+  --ink: #13201b;
+  --muted: #56665f;
+  --line: #d2dbd6;
+  --mask: #1d5c44;        /* solder-mask green: primary accent */
+  --mask-soft: #e0ebe5;
+  --copper: #a85f27;      /* exposed copper: small details only */
+  --hero-bg: #060908;
+  --hero-ink: #e8efeb;
+  --hero-muted: #9aaba3;
+  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.1875rem;
+  --step-2: 1.5rem;
+  --step-3: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+  --step-4: clamp(2.6rem, 1.4rem + 5.2vw, 5.25rem);
+  --wrap: 72rem;
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d1412; --panel: #131c19; --ink: #e2eae6; --muted: #93a49c; --line: #26332e;
+    --mask: #6cc79f; --mask-soft: #18302a; --copper: #dc9a62; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1412; --panel: #131c19; --ink: #e2eae6; --muted: #93a49c; --line: #26332e;
+  --mask: #6cc79f; --mask-soft: #18302a; --copper: #dc9a62; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--mask); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.wrap { max-width: var(--wrap); margin-inline: auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.mono { font-family: var(--font-mono); }
+.label {
+  font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--muted);
+}
+.skip { position: absolute; left: -999px; top: 0; }
+.skip:focus { left: 16px; top: 16px; background: var(--panel); padding: 8px 12px; z-index: 20; }
+
+/* ---------- Hero ---------- */
+.hero {
+  background: var(--hero-bg);
+  color: var(--hero-ink);
+  overflow: hidden;
+}
+.hero .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+  padding-block: 2.5rem 3rem;
+}
+.topbar {
+  grid-column: 1 / -1;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem 1.5rem;
+  font-family: var(--font-mono); font-size: var(--step--1);
+  color: var(--hero-muted);
+  border-bottom: 1px solid #1e2a25;
+  padding-bottom: 1rem;
+}
+.topbar nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; }
+.topbar a { color: var(--hero-ink); text-decoration: none; }
+.topbar a:hover { text-decoration: underline; }
+.hero-text { display: grid; gap: 1.25rem; min-width: 0; padding-block: 1.5rem; }
+.hero h1 {
+  font-size: var(--step-4);
+  font-weight: 800;
+  font-variation-settings: "wdth" 112;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+.hero .role {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 88;
+  font-weight: 500;
+  font-size: var(--step-2);
+  line-height: 1.25;
+  color: #b9e6cf;
+}
+.hero .lede { max-width: 34rem; color: var(--hero-muted); font-size: var(--step-1); line-height: 1.55; }
+.hero .lede strong { color: var(--hero-ink); font-weight: 500; }
+.facts { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
+.facts li {
+  font-family: var(--font-mono); font-size: var(--step--1);
+  border: 1px solid #2a3832; border-radius: 3px; padding: 0.2rem 0.55rem; color: #c9d6d0;
+}
+.cta { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-mono); font-size: 0.875rem; font-weight: 500;
+  padding: 0.6rem 1rem; border-radius: 3px; text-decoration: none;
+  border: 1px solid #3a4c44; color: var(--hero-ink); background: transparent;
+  cursor: pointer;
+}
+.btn:hover { border-color: #b9e6cf; text-decoration: none; }
+.btn.primary { background: #b9e6cf; color: #06130d; border-color: #b9e6cf; }
+.btn.primary:hover { background: #d4f2e2; }
+.hero-figure { margin: 0; position: relative; min-width: 0; }
+.hero-figure img {
+  width: 100%;
+  -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
+          mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
+  mix-blend-mode: lighten;
+}
+.hero-figure figcaption {
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--hero-muted);
+  display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; justify-content: center; margin-top: -0.5rem;
+}
+.hero-figure figcaption span::before { content: "◦ "; color: #d79a63; }
+
+/* ---------- Section scaffolding ---------- */
+section { padding-block: 4.5rem; }
+section + section { border-top: 1px solid var(--line); }
+.section-head { display: grid; gap: 0.5rem; margin-bottom: 2.25rem; max-width: 44rem; }
+.section-head h2 { font-size: var(--step-3); font-weight: 750; font-variation-settings: "wdth" 104; letter-spacing: -0.01em; line-height: 1.1; }
+.section-head p { color: var(--muted); }
+
+/* ---------- Project index (parts-list table) ---------- */
+.index-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
+table.index { width: 100%; border-collapse: collapse; min-width: 44rem; font-size: 0.9375rem; }
+.index th, .index td { text-align: left; padding: 0.8rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.index tr:last-child td { border-bottom: 0; }
+.index th { font-family: var(--font-mono); font-weight: 500; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--mask-soft); }
+.index td.year { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+.index td.parts { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--muted); }
+.index a { font-weight: 600; text-decoration: none; color: var(--ink); }
+.index a:hover { color: var(--mask); text-decoration: underline; }
+.index tbody tr:hover { background: var(--mask-soft); }
+
+/* ---------- Project spreads ---------- */
+.project { display: grid; gap: 2rem; padding-block: 3.5rem; border-top: 1px solid var(--line); scroll-margin-top: 1rem; }
+.project:first-of-type { border-top: 0; padding-top: 0; }
+.project-head { display: grid; gap: 0.6rem; max-width: 48rem; }
+.eyebrow { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
+.eyebrow .tag { color: var(--copper); }
+.project h3 { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.25rem); font-weight: 750; font-variation-settings: "wdth" 100; line-height: 1.1; letter-spacing: -0.01em; }
+.project .summary { font-size: var(--step-1); line-height: 1.55; max-width: 44rem; }
+.project-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+.writeup { display: grid; gap: 1.5rem; min-width: 0; }
+.writeup h4 { margin: 0 0 0.5rem; font-family: var(--font-mono); font-weight: 500; font-size: var(--step--1); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.writeup ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.5rem; }
+.writeup li::marker { color: var(--copper); }
+.writeup li { max-width: 40rem; }
+.note {
+  border-left: 2px solid var(--copper); padding: 0.75rem 1rem; background: var(--panel);
+  font-size: 0.9375rem; color: var(--muted); max-width: 40rem;
+}
+.note strong { color: var(--ink); font-weight: 600; }
+.debug { display: grid; gap: 0.75rem; }
+.debug div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem; font-size: 0.9375rem; }
+.debug dt, .debug .sym { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--copper); padding-top: 0.15rem; }
+.spec { margin: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
+.spec div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 1rem; padding: 0.6rem 1rem; border-bottom: 1px solid var(--line); }
+.spec div:last-child { border-bottom: 0; }
+.spec dt { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding-top: 0.2rem; }
+.spec dd { margin: 0; font-size: 0.9375rem; }
+.side { display: grid; gap: 1.25rem; min-width: 0; }
+.repo { font-family: var(--font-mono); font-size: 0.875rem; }
+.gallery { display: grid; gap: 1rem; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); }
+.gallery figure { margin: 0; display: grid; gap: 0.5rem; align-content: start; min-width: 0; }
+.gallery img { width: 100%; border-radius: 3px; border: 1px solid var(--line); background: var(--panel); }
+.gallery .crop img { aspect-ratio: 4 / 3; object-fit: cover; }
+.gallery .tall img { aspect-ratio: 3 / 4; object-fit: cover; }
+.gallery figcaption { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); line-height: 1.45; }
+.gallery .wide { grid-column: span 2; }
+.credit { font-size: 0.875rem; color: var(--muted); }
+
+/* ---------- Also on GitHub ---------- */
+.minor { display: grid; grid-template-columns: minmax(0, 40rem); gap: 1rem; }
+.minor article { border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem; background: var(--panel); display: grid; gap: 0.5rem; align-content: start; }
+.minor h3 { font-size: var(--step-1); font-weight: 700; }
+.minor p { color: var(--muted); font-size: 0.9375rem; }
+
+/* ---------- Experience / skills / education ---------- */
+.job { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 2rem; }
+.job .when { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); display: grid; gap: 0.25rem; align-content: start; }
+.job h3 { font-size: var(--step-2); font-weight: 700; margin-bottom: 0.25rem; }
+.job .sub { color: var(--muted); margin-bottom: 1rem; }
+.job ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.5rem; max-width: 44rem; }
+.job li::marker { color: var(--copper); }
+.skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 2.5rem; }
+.skills h3 { font-family: var(--font-mono); font-weight: 500; font-size: var(--step--1); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; margin: 0; padding: 0; }
+.chips li { font-size: 0.875rem; border: 1px solid var(--line); background: var(--panel); border-radius: 3px; padding: 0.2rem 0.55rem; }
+.edu { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 2.5rem; }
+.edu h3 { font-size: var(--step-1); font-weight: 700; }
+.edu p { color: var(--muted); }
+.edu .grade { font-family: var(--font-mono); color: var(--mask); font-size: var(--step-2); font-weight: 500; }
+
+/* ---------- Contact ---------- */
+.contact { background: var(--hero-bg); color: var(--hero-ink); border-top: 0; padding-block: 4.5rem 3rem; }
+.contact h2 { font-size: var(--step-3); font-weight: 750; font-variation-settings: "wdth" 104; line-height: 1.1; max-width: 32rem; }
+.contact .wrap { display: grid; gap: 2rem; }
+.contact p { color: var(--hero-muted); max-width: 38rem; }
+.contact-rows { display: grid; gap: 0; border-top: 1px solid #1e2a25; }
+.contact-rows div { display: grid; grid-template-columns: 7rem minmax(0, 1fr) auto; gap: 1rem; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #1e2a25; }
+.contact-rows dt { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hero-muted); }
+.contact-rows dd { margin: 0; font-family: var(--font-mono); font-size: 0.9375rem; overflow-wrap: anywhere; }
+.contact-rows a { color: var(--hero-ink); }
+.copy { font-family: var(--font-mono); font-size: 0.75rem; padding: 0.3rem 0.6rem; border: 1px solid #3a4c44; background: transparent; color: var(--hero-ink); border-radius: 3px; cursor: pointer; }
+.copy:hover { border-color: #b9e6cf; }
+.footer-line { font-family: var(--font-mono); font-size: 0.75rem; color: var(--hero-muted); display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; justify-content: space-between; padding-top: 1rem; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .hero-figure { order: -1; grid-row: 2; }
+  .hero-text { grid-row: 3; padding-top: 0; }
+  .project-body, .edu { grid-template-columns: minmax(0, 1fr); }
+  .skills { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .job { grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+}
+@media (max-width: 640px) {
+  section { padding-block: 3.25rem; }
+  .gallery { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .gallery .wide { grid-column: 1 / -1; }
+  .minor, .skills { grid-template-columns: minmax(0, 1fr); }
+  .spec div { grid-template-columns: 6rem minmax(0, 1fr); }
+  .debug div { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .contact-rows div { grid-template-columns: minmax(0, 1fr) auto; }
+  .contact-rows dt { grid-column: 1 / -1; }
+}
+
+/* ---------- Fixes ---------- */
+.hero-figure { display: grid; gap: 1.25rem; justify-items: center; }
+.hero-figure figcaption { margin-top: 0; }
+.gallery .diagram img { object-fit: contain; background: #000; }
+
+/* ---------- Immersive hero ---------- */
+.hero { position: relative; isolation: isolate; }
+.hero-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 65%, transparent);
+          mask-image: linear-gradient(#000 65%, transparent);
+}
+.board-float { position: relative; width: 100%; animation: float 7s ease-in-out infinite; }
+.board-float::before {
+  content: ""; position: absolute; inset: 18% 14%; z-index: -1;
+  background: radial-gradient(closest-side, rgba(108, 199, 159, 0.28), transparent);
+  filter: blur(36px);
+}
+.board { transform-origin: 50% 60%; transition: transform 0.3s ease-out; will-change: transform; }
+@keyframes float { 50% { translate: 0 -12px; } }
+.scroll-cue {
+  position: absolute; left: 50%; bottom: 1.25rem; transform: translateX(-50%);
+  display: grid; justify-items: center; gap: 0.45rem;
+  font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--hero-muted); text-decoration: none;
+}
+.scroll-cue i { display: block; width: 1px; height: 2.25rem; background: linear-gradient(#b9e6cf, transparent); transform-origin: top; animation: cue 2.2s ease-in-out infinite; }
+@keyframes cue { 0% { transform: scaleY(0); opacity: 1; } 55% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+@media (min-width: 901px) {
+  .hero .wrap { min-height: min(56rem, 94svh); grid-template-rows: auto 1fr; padding-bottom: 5.5rem; }
+}
+@media (max-width: 900px) { .scroll-cue { display: none; } }
+
+/* ---------- Scroll progress + section rail ---------- */
+.progress { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; height: 3px; z-index: 30; pointer-events: none; }
+.progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--mask), var(--copper)); transform: scaleX(0); transform-origin: left; }
+.rail {
+  position: fixed; right: max(20px, env(safe-area-inset-right, 0px)); top: 50%; transform: translateY(-50%);
+  z-index: 25; display: none; flex-direction: column; gap: 0.95rem;
+  opacity: 0; pointer-events: none; transition: opacity 0.4s;
+}
+.rail::before { content: ""; position: absolute; left: 50%; top: 6px; bottom: 6px; width: 1px; background: var(--line); }
+.rail.show { opacity: 1; pointer-events: auto; }
+.rail a { position: relative; display: block; width: 12px; height: 12px; }
+.rail .dot { position: absolute; inset: 1px; border: 1.5px solid var(--muted); border-radius: 50%; background: var(--paper); transition: background 0.25s, border-color 0.25s, transform 0.25s; }
+.rail a.on .dot { background: var(--copper); border-color: var(--copper); transform: scale(1.3); }
+.rail a:hover .dot { border-color: var(--copper); }
+.rail .txt {
+  position: absolute; right: 24px; top: 50%; transform: translate(6px, -50%);
+  white-space: nowrap; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line); padding: 0.15rem 0.5rem; border-radius: 3px;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+}
+.rail a:hover .txt, .rail a:focus-visible .txt { opacity: 1; transform: translate(0, -50%); }
+@media (min-width: 1300px) { .rail { display: flex; } }
+
+/* ---------- Scroll reveal (only when JS + motion are available) ---------- */
+html.js :is(.hero-text > *, .hero-figure, .section-head, .index-scroll, .project-head, .writeup > *, .side > *, .gallery > figure, .minor > article, .job, .skills > div, .edu > div, .contact .wrap > *) {
+  opacity: 0; transform: translateY(34px);
+  transition: opacity 0.85s cubic-bezier(0.2, 0.65, 0.2, 1) var(--d, 0ms), transform 0.85s cubic-bezier(0.2, 0.65, 0.2, 1) var(--d, 0ms);
+}
+html.js :is(.hero-text > *, .hero-figure, .section-head, .index-scroll, .project-head, .writeup > *, .side > *, .gallery > figure, .minor > article, .job, .skills > div, .edu > div, .contact .wrap > *).in { opacity: 1; transform: none; }
+html.js :is(.gallery > figure, .side > figure) img { clip-path: inset(0 0 100% 0); transition: clip-path 1.15s cubic-bezier(0.7, 0, 0.2, 1) calc(var(--d, 0ms) + 120ms); }
+html.js :is(.gallery > figure, .side > figure).in img { clip-path: inset(0 0 0 0); }
+html.js .spec > div { opacity: 0; transform: translateX(-12px); transition: opacity 0.5s ease calc(var(--d, 0ms) + var(--i, 0) * 70ms + 150ms), transform 0.5s ease calc(var(--d, 0ms) + var(--i, 0) * 70ms + 150ms); }
+html.js .spec.in > div { opacity: 1; transform: none; }
+.project-head::before {
+  content: ""; display: block; height: 2px; width: 100%; max-width: 48rem; margin-bottom: 0.75rem;
+  background: linear-gradient(90deg, var(--copper), transparent);
+  transform-origin: left; transition: transform 1.3s cubic-bezier(0.7, 0, 0.2, 1) 0.15s;
+}
+html.js .project-head:not(.in)::before { transform: scaleX(0); }
+
+/* ---------- Lightbox ---------- */
+.zoomable { cursor: zoom-in; }
+.lightbox {
+  width: 100%; height: 100%; max-width: 100%; max-height: 100%; margin: 0; border: 0; background: transparent; color: #e8efeb;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.lightbox[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 0.75rem; justify-items: center; align-items: center; }
+.lightbox::backdrop { background: rgba(4, 7, 6, 0.92); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.lightbox img { max-width: min(1500px, 100%); max-height: 100%; min-height: 0; object-fit: contain; border-radius: 3px; cursor: zoom-out; }
+.lb-close { justify-self: end; font-family: var(--font-mono); font-size: 0.8125rem; padding: 0.4rem 0.8rem; border: 1px solid #3a4c44; background: transparent; color: #e8efeb; border-radius: 3px; cursor: pointer; }
+.lb-close:hover { border-color: #b9e6cf; }
+#lb-cap { font-family: var(--font-mono); font-size: 0.8125rem; color: #b8c7c0; text-align: center; max-width: 64ch; }
+
+@media (prefers-reduced-motion: reduce) {
+  .board-float, .scroll-cue i { animation: none; }
+  .board { transition: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to projects</a>
+<div class="progress" aria-hidden="true"><span></span></div>
+<nav class="rail" aria-label="Jump to section">
+  <a href="#flight-controller"><span class="dot"></span><span class="txt">Flight controller</span></a>
+  <a href="#sesame"><span class="dot"></span><span class="txt">Sesame robots</span></a>
+  <a href="#cansat"><span class="dot"></span><span class="txt">CanSat USA</span></a>
+  <a href="#stm32"><span class="dot"></span><span class="txt">STM32 drivers</span></a>
+  <a href="#rover"><span class="dot"></span><span class="txt">Delivery rover</span></a>
+  <a href="#experience"><span class="dot"></span><span class="txt">Experience</span></a>
+  <a href="#skills"><span class="dot"></span><span class="txt">Skills</span></a>
+  <a href="#contact"><span class="dot"></span><span class="txt">Contact</span></a>
+</nav>
+
+<header class="hero">
+  <canvas class="hero-canvas" id="traces" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="topbar">
+      <span>Berlin, Germany</span>
+      <nav aria-label="Sections">
+        <a href="#work">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+
+    <div class="hero-text">
+      <h1>Mustafa Dalal</h1>
+      <p class="role">Embedded hardware &amp; electronics engineer</p>
+      <p class="lede">I design <strong>4-layer PCBs in KiCad</strong>, write <strong>bare-metal C for STM32</strong> without HAL, and integrate sensor suites into working prototypes. Applied Mechatronics student at SRH Berlin and Werkstudent in software verification at MBition.</p>
+      <ul class="facts" aria-label="Highlights">
+        <li>CanSat USA 2025 &amp; 2026</li>
+        <li>B.Eng. GPA 1.8</li>
+        <li>English C1 · German B2</li>
+      </ul>
+      <div class="cta">
+        <a class="btn primary" href="#work">See projects</a>
+        <a class="btn" href="https://github.com/Mustafa0812" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/mustafa-dalal-41abb92a0/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+
+    <figure class="hero-figure">
+      <div class="board-float"><img class="board" src="assets/img/fc-board.webp" width="1400" height="950" alt="3D render of Mustafa's custom flight controller PCB: USB-C connector, STM32F411 in the centre, buck converter, reset and boot buttons, and JST-GH connectors along the edge."></div>
+      <figcaption><span>STM32F411CEU6</span><span>ICM-42688-P</span><span>BMP581</span><span>4-layer · KiCad 9</span></figcaption>
+    </figure>
+  </div>
+  <a class="scroll-cue" href="#work"><span>Scroll</span><i aria-hidden="true"></i></a>
+</header>
+
+<main>
+  <section id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="label">Selected work</span>
+        <h2 id="work-title">From schematic to a board that runs</h2>
+        <p>Five projects across avionics, robotics and low-level firmware. Each one links to its repository with schematics, layouts and source. Click any image to enlarge it.</p>
+      </div>
+
+      <div class="index-scroll" role="region" aria-label="Project list" tabindex="0">
+        <table class="index">
+          <thead>
+            <tr><th scope="col">Project</th><th scope="col">Year</th><th scope="col">What it is</th><th scope="col">Key parts</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><a href="#flight-controller">Custom flight controller</a></td><td class="year">2026–now</td><td>Drone avionics PCB + firmware</td><td class="parts">STM32F411 · ICM-42688-P · BMP581 · TPS54302</td></tr>
+            <tr><td><a href="#sesame">Sesame robots, leader &amp; follower</a></td><td class="year">2026</td><td>Two quadrupeds synced over radio</td><td class="parts">ESP32-S3 · PCA9685 · INA260 · Raspberry Pi</td></tr>
+            <tr><td><a href="#cansat">CanSat USA avionics</a></td><td class="year">2025–26</td><td>Flown satellite payload electronics</td><td class="parts">Pi Zero 2W · BNO055 · NEO-M9N · XBee XR900</td></tr>
+            <tr><td><a href="#stm32">STM32 bare-metal drivers</a></td><td class="year">2025</td><td>Register-level peripheral library</td><td class="parts">STM32F411RE · CMSIS · CMake · OpenOCD</td></tr>
+            <tr><td><a href="#rover">Line-following delivery rover</a></td><td class="year">Coursework</td><td>Autonomous indoor delivery robot</td><td class="parts">Arduino Uno · L298N · HC-SR04 · Raspberry Pi 3</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ===== Flight controller ===== -->
+      <article class="project" id="flight-controller" aria-labelledby="fc-title" style="margin-top:3.5rem">
+        <div class="project-head">
+          <div class="eyebrow"><span>2026 – present</span><span class="tag">PCB design · Firmware</span></div>
+          <h3 id="fc-title">Custom flight controller PCB &amp; firmware</h3>
+          <p class="summary">A drone flight controller designed from a blank schematic: an STM32F411 board with its own power stage, IMU, barometer, radio link and blackbox logging, laid out on four layers in KiCad 9.</p>
+        </div>
+        <div class="project-body">
+          <div class="writeup">
+            <div>
+              <h4>Hardware</h4>
+              <ul>
+                <li>Schematic and 4-layer layout for an STM32F411CEU6 (UQFN48) with an 8 MHz HSE crystal, so native USB-C works without a separate USB-UART chip.</li>
+                <li>ICM-42688-P IMU on SPI, BMP581 barometer on I²C, ExpressLRS receiver on UART, four ESC outputs and a microSD slot for blackbox logs.</li>
+                <li>Power from the battery through a TPS54302 buck converter, then a 3.3 V LDO for a clean MCU and sensor rail. USBLC6-2SC6 ESD protection on the USB lines.</li>
+                <li>Physical BOOT and RESET buttons only. Nothing on the USB side can reset the MCU mid-flight.</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Firmware, in progress</h4>
+              <ul>
+                <li>FreeRTOS task structure, Kalman-filter sensor fusion and MAVLink telemetry over the ELRS link.</li>
+              </ul>
+            </div>
+            <a class="repo" href="https://github.com/Mustafa0812/FlightController" target="_blank" rel="noopener">github.com/Mustafa0812/FlightController ↗</a>
+          </div>
+          <div class="side">
+            <dl class="spec">
+              <div><dt>MCU</dt><dd>STM32F411CEU6, 512 KB flash, 128 KB RAM</dd></div>
+              <div><dt>Sensors</dt><dd>ICM-42688-P (SPI), BMP581 (I²C)</dd></div>
+              <div><dt>Links</dt><dd>ELRS (UART), native USB-C, SWD</dd></div>
+              <div><dt>Outputs</dt><dd>4 × ESC (DShot / PWM)</dd></div>
+              <div><dt>Power</dt><dd>TPS54302 buck, 3.3 V LDO</dd></div>
+              <div><dt>Tools</dt><dd>KiCad 9, FreeRTOS</dd></div>
+            </dl>
+          </div>
+        </div>
+        <div class="gallery" style="--cols:2">
+          <figure>
+            <img src="assets/img/fc-top.webp" width="1200" height="814" loading="lazy" alt="Top view render of the flight controller: STM32 in the centre, crystal below it, IMU to the right, connectors on the edges.">
+            <figcaption>Top-side render from the KiCad board file.</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/fc-bottom.webp" width="1200" height="814" loading="lazy" alt="Bottom view render of the flight controller PCB with the microSD card slot and a JST-GH connector.">
+            <figcaption>Bottom side: microSD slot for blackbox logging.</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <!-- ===== Sesame ===== -->
+      <article class="project" id="sesame" aria-labelledby="sesame-title">
+        <div class="project-head">
+          <div class="eyebrow"><span>2026</span><span class="tag">ESP-NOW · Firmware · Ground station</span></div>
+          <h3 id="sesame-title">Sesame robots: two quadrupeds that move together</h3>
+          <p class="summary">Two eight-servo walking robots that perform the same routine in step. One bot leads, the other follows over ESP-NOW, and a Raspberry Pi ground station shows each bot's battery, current and signal on a web dashboard.</p>
+        </div>
+        <div class="project-body">
+          <div class="writeup">
+            <div>
+              <h4>What I built</h4>
+              <ul>
+                <li>Ported the robot to an ESP32-S3 SuperMini with a PCA9685 servo driver, an SSD1306 face display and an INA260 power monitor, all sharing one I²C bus.</li>
+                <li>Leader/follower firmware where the leader announces each sequence and the follower plays it from its own memory, step for step. A lost packet cannot make the follower skip a move.</li>
+                <li>Commands are acknowledged and re-sent up to three times. The dashboard shows when a command was refused and why.</li>
+                <li>An ESP32 gateway bridges ESP-NOW to USB serial. On the Pi, Python publishers stream an MPU6500 (SPI) and a BMP388 (I²C) over MQTT. Tilt the IMU and both bodies lean to match.</li>
+                <li>Flask dashboard with live battery, current, RSSI, roles, temperature and pressure, plus an activity log of every command, reply and reboot.</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Debugging on the bench</h4>
+              <dl class="debug">
+                <div><dt>Symptom</dt><dd>Both bots skipped moves mid-routine.</dd></div>
+                <div><dt>Cause</dt><dd>In lockstep, both bots start every move at once. Their servo current peaks added up on one shared bench supply, which hit its current limit and sagged. Firmware counters (I²C write errors, lost moves, reset reason) showed zero faults, which ruled out the code.</dd></div>
+                <div><dt>Symptom</dt><dd>Heavy packet loss with the bots close together.</dd></div>
+                <div><dt>Cause</dt><dd>At very short range the radios overloaded each other and most packets were lost. Lowering TX power from 14 dBm to 8 dBm fixed it, and the follower's link counter made the loss visible over serial.</dd></div>
+              </dl>
+            </div>
+            <p class="credit">Built on the open-source <a href="https://github.com/dorianborian/sesame-robot" target="_blank" rel="noopener">Sesame Robot</a> by Dorian Todd, which provides the mechanical design, original firmware, faces and movement sequences. The multi-robot system, hardware port, gateway and ground station are my additions.</p>
+            <a class="repo" href="https://github.com/Mustafa0812/Sesame" target="_blank" rel="noopener">github.com/Mustafa0812/Sesame ↗</a>
+          </div>
+          <div class="side">
+            <dl class="spec">
+              <div><dt>Robots</dt><dd>ESP32-S3 SuperMini, PCA9685, 8 × MG90 servos</dd></div>
+              <div><dt>Sensing</dt><dd>INA260 per bot; MPU6500 + BMP388 on the Pi</dd></div>
+              <div><dt>Radio</dt><dd>ESP-NOW, channel 1, ACK + 3 retries</dd></div>
+              <div><dt>Ground</dt><dd>Raspberry Pi, Mosquitto MQTT, Flask</dd></div>
+              <div><dt>Code</dt><dd>C++ (Arduino), Python, JavaScript</dd></div>
+            </dl>
+            <figure class="gallery" style="--cols:1;margin:0">
+              <img src="assets/img/sesame-bot.webp" width="1000" height="1333" loading="lazy" alt="Finished Sesame quadruped robot with its OLED face showing battery status.">
+            </figure>
+          </div>
+        </div>
+        <div class="gallery" style="--cols:3">
+          <figure class="wide">
+            <img src="assets/img/sesame-dashboard.webp" width="1600" height="1420" loading="lazy" alt="Ground station dashboard with robot cards, sequence buttons, a 3D IMU view, an activity log and temperature and pressure charts.">
+            <figcaption>Ground station dashboard on the Pi.</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/sesame-build.webp" width="1000" height="1333" loading="lazy" alt="Both robots partly assembled on a desk with PCA9685 boards and jumper wiring.">
+            <figcaption>Both bots during assembly.</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <!-- ===== CanSat ===== -->
+      <article class="project" id="cansat" aria-labelledby="cansat-title">
+        <div class="project-head">
+          <div class="eyebrow"><span>2025 – 2026</span><span class="tag">Electrical lead · PCB · Flown</span></div>
+          <h3 id="cansat-title">CanSat USA avionics</h3>
+          <p class="summary">Two seasons in the CanSat USA competition. In 2026 I owned the payload electronics end to end: power, sensors, release mechanisms and RF telemetry on a 4-layer board that flew. In 2025 I worked on the structure, CAD and FEA.</p>
+        </div>
+        <div class="project-body">
+          <div class="writeup">
+            <div>
+              <h4>2026, electrical lead</h4>
+              <ul>
+                <li>4-layer KiCad board with a continuous ground plane on layer 2, via stitching and copper pours for the high-current paths.</li>
+                <li>Two 18650 cells in series (7.4 V) feed dual buck stages: 3.3 V for sensors and GPS, 5 V for the Raspberry Pi Zero 2W flight computer. An INA260 measures the whole system's current, voltage and power.</li>
+                <li>BMP581, BNO055, INA260 and NEO-M9N share one I²C bus with short traces and chosen pull-ups. XBee XR900 handles long-range telemetry.</li>
+                <li>N-channel MOSFETs switch battery voltage into nichrome wire for the main payload release and egg release, keeping the Pi's GPIO away from 7.4 V.</li>
+              </ul>
+            </div>
+            <div class="note"><strong>Late change, no respin.</strong> After the board was fabricated, the software team moved from a Teensy 4.1 to a Raspberry Pi Zero 2W. I designed an adapter HAT that maps the Pi's 40-pin header onto the Teensy footprint, so the team kept the existing board and met the deadline.</div>
+            <div>
+              <h4>2025, prototyping, CAD &amp; mechanical</h4>
+              <ul>
+                <li>Parametric CAD and Ansys FEA to check the structure under high-g launch loads.</li>
+                <li>Rapid prototyping and structural parts on Bambu FDM and SLA printers.</li>
+              </ul>
+            </div>
+            <a class="repo" href="https://github.com/Mustafa0812/CanSat-USA" target="_blank" rel="noopener">github.com/Mustafa0812/CanSat-USA ↗</a>
+          </div>
+          <div class="side">
+            <dl class="spec">
+              <div><dt>Computer</dt><dd>Raspberry Pi Zero 2W</dd></div>
+              <div><dt>Sensors</dt><dd>BMP581, BNO055, INA260, NEO-M9N GPS</dd></div>
+              <div><dt>Telemetry</dt><dd>Digi XBee XR900</dd></div>
+              <div><dt>Rails</dt><dd>7.4 V battery, 3.3 V and 5 V buck</dd></div>
+              <div><dt>Actuators</dt><dd>2 × MG90S, 2 × nichrome release</dd></div>
+            </dl>
+            <figure class="gallery" style="--cols:1;margin:0">
+              <img src="assets/img/cansat-flight.webp" width="663" height="801" loading="lazy" alt="The CanSat payload after flight, with the Raspberry Pi, wiring and release hardware visible.">
+              <figcaption>The payload after its flight.</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="gallery" style="--cols:3">
+          <figure>
+            <img src="assets/img/cansat-pcb.webp" width="1100" height="1074" loading="lazy" alt="Assembled green CanSat avionics PCB with two buck converter stages and sensor connectors.">
+            <figcaption>Assembled avionics board.</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/cansat-layout.webp" width="1100" height="1104" loading="lazy" alt="KiCad layout view of the CanSat board showing copper zones and routing.">
+            <figcaption>Full layout in KiCad.</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/cansat-hat.webp" width="1100" height="1023" loading="lazy" alt="The adapter HAT fitted onto the avionics board in place of the Teensy.">
+            <figcaption>Pi Zero 2W adapter HAT in the Teensy footprint.</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <!-- ===== STM32 ===== -->
+      <article class="project" id="stm32" aria-labelledby="stm32-title">
+        <div class="project-head">
+          <div class="eyebrow"><span>2025</span><span class="tag">Embedded C · No HAL</span></div>
+          <h3 id="stm32-title">STM32F411 bare-metal peripheral drivers</h3>
+          <p class="summary">A driver framework for the STM32F411 Nucleo-64 written against the CMSIS device headers with direct register access. No HAL, no LL. Built with CMake and flashed and debugged through OpenOCD.</p>
+        </div>
+        <div class="project-body">
+          <div class="writeup">
+            <div>
+              <h4>Drivers</h4>
+              <ul>
+                <li><span class="mono">UART</span>: interrupt-driven USART2 TX with a 256-byte ring buffer drained by the TXE interrupt, so <span class="mono">printf</span> returns immediately.</li>
+                <li><span class="mono">SPI + DMA</span>: full-duplex SPI1 master, plus a DMA2 driver (Stream 3 TX, Stream 2 RX) that frees the CPU during transfers.</li>
+                <li><span class="mono">I²C</span>: I2C1 master at 100 kHz with burst register reads.</li>
+                <li><span class="mono">GPIO / EXTI</span>: atomic BSRR writes and a falling-edge interrupt with a registered callback.</li>
+                <li><span class="mono">SysTick / PWM</span>: free-running 1 ms tick, non-blocking delays and timer PWM.</li>
+              </ul>
+            </div>
+            <div>
+              <h4>On top of the drivers</h4>
+              <ul>
+                <li>Device drivers for the MPU-9250 (SPI and I²C), BMP390 and VL53L1X.</li>
+                <li>Examples for FreeRTOS tasks and preemption, and complementary and Kalman filters fed by SPI DMA.</li>
+              </ul>
+            </div>
+            <a class="repo" href="https://github.com/Mustafa0812/STM32-Drivers" target="_blank" rel="noopener">github.com/Mustafa0812/STM32-Drivers ↗</a>
+          </div>
+          <div class="side">
+            <dl class="spec">
+              <div><dt>Target</dt><dd>STM32F411RE, Cortex-M4 @ 16 MHz HSI</dd></div>
+              <div><dt>Peripherals</dt><dd>GPIO, EXTI, UART, SPI, DMA, I²C, SysTick, PWM</dd></div>
+              <div><dt>Devices</dt><dd>MPU-9250, BMP390, VL53L1X</dd></div>
+              <div><dt>Toolchain</dt><dd>arm-none-eabi-gcc, CMake, OpenOCD</dd></div>
+            </dl>
+            <figure class="gallery" style="--cols:1;margin:0">
+              <img src="assets/img/stm32-uart.webp" width="1186" height="768" loading="lazy" alt="Serial terminal showing accelerometer readings in milli-g streamed from the STM32 over UART.">
+              <figcaption>MPU-9250 accelerometer readings streamed over the UART driver.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </article>
+
+      <!-- ===== Rover ===== -->
+      <article class="project" id="rover" aria-labelledby="rover-title">
+        <div class="project-head">
+          <div class="eyebrow"><span>University project · grade 1.3</span><span class="tag">Arduino · Raspberry Pi · State machine</span></div>
+          <h3 id="rover-title">Line-following delivery rover</h3>
+          <p class="summary">An autonomous rover for delivering packages inside a building. It follows a line to the drop-off point, detects when a package is loaded or taken, emails the status and drives itself back to the home station.</p>
+        </div>
+        <div class="project-body">
+          <div class="writeup">
+            <div>
+              <h4>How it works</h4>
+              <ul>
+                <li>The Arduino Uno runs the real-time control as a state machine: forward line following, emergency stop and a return mode, switched by serial commands from the Pi.</li>
+                <li>Two IR sensors steer a 4-wheel differential drive through an L298N H-bridge. When both sensors see black at once, the rover has reached the stop line, halts and beeps.</li>
+                <li>An HC-SR04 detects the package. Anything within 15 cm for more than 300 ms counts as loaded, which filters out hands passing by.</li>
+                <li>A Raspberry Pi 3 reads the Arduino's status messages over USB serial and sends email notifications through SMTP.</li>
+                <li>One 12 V battery drives the motors directly and feeds a 5 V regulator for the Arduino and the Pi.</li>
+              </ul>
+            </div>
+            <a class="repo" href="https://github.com/Mustafa0812/Line_Follower--Delivery-Bot" target="_blank" rel="noopener">github.com/Mustafa0812/Line_Follower--Delivery-Bot ↗</a>
+          </div>
+          <div class="side">
+            <dl class="spec">
+              <div><dt>Control</dt><dd>Arduino Uno (ATmega328P)</dd></div>
+              <div><dt>Host</dt><dd>Raspberry Pi 3, serial at 9600 baud</dd></div>
+              <div><dt>Sensors</dt><dd>2-channel IR array, HC-SR04</dd></div>
+              <div><dt>Drive</dt><dd>L298N, 2 × DC gear motors, 12 V</dd></div>
+              <div><dt>Frame</dt><dd>Acrylic, 4-wheel differential drive</dd></div>
+            </dl>
+          </div>
+        </div>
+        <div class="gallery" style="--cols:3">
+          <figure class="tall">
+            <img src="assets/img/rover-outside.webp" width="1100" height="1467" loading="lazy" alt="The rover from outside: black acrylic frame on four wheels with the IR sensor array at the front.">
+            <figcaption>Assembled rover.</figcaption>
+          </figure>
+          <figure class="tall">
+            <img src="assets/img/rover-inside.webp" width="1100" height="1467" loading="lazy" alt="Inside the rover: Arduino, motor driver, regulator and wiring in the chassis.">
+            <figcaption>Electronics inside the chassis.</figcaption>
+          </figure>
+          <figure class="tall diagram">
+            <img src="assets/img/rover-wiring.webp" width="1600" height="1741" loading="lazy" alt="Wiring diagram of the battery, regulator, Arduino, L298N, motors, sensors, buzzer and Raspberry Pi.">
+            <figcaption>System wiring diagram.</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <div class="section-head" style="margin-top:3rem;margin-bottom:1.25rem">
+        <span class="label">Also on GitHub</span>
+      </div>
+      <div class="minor">
+        <article>
+          <div class="eyebrow"><span>In progress</span><span class="tag">ROS 2 Humble</span></div>
+          <h3><a href="https://github.com/Mustafa0812/rover-slam-project" target="_blank" rel="noopener">Rover SLAM</a></h3>
+          <p>A teleoperated mapping rover. An STM32 running FreeRTOS and micro-ROS handles motor PID and encoder odometry, while a Raspberry Pi runs an RPLIDAR and SLAM Toolbox. The ROS 2 workspace is up and the STM32 side comes next.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" aria-labelledby="exp-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="label">Experience</span>
+        <h2 id="exp-title">Working on production hardware</h2>
+      </div>
+      <div class="job">
+        <div class="when"><span>Aug 2026 – present</span><span>Berlin</span></div>
+        <div>
+          <h3>MBition</h3>
+          <p class="sub">Werkstudent, Software Verification</p>
+          <ul>
+            <li>Verify MB.OS software merge requests on test benches with Mercedes-Benz infotainment hardware, through automated GitLab CI pipelines.</li>
+            <li>Set up, wire and maintain the test benches. Flash ECUs at low and high level with TUT, XPCAT and FlashGUI.</li>
+            <li>Run Ethernet-based simulation, diagnostics and variant coding in DTS Monaco, and track bugs in Jira.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" aria-labelledby="skills-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="label">Skills</span>
+        <h2 id="skills-title">Tools I use on these projects</h2>
+      </div>
+      <div class="skills">
+        <div>
+          <h3>Hardware &amp; PCB</h3>
+          <ul class="chips">
+            <li>KiCad</li><li>4-layer stack-ups</li><li>Schematic capture</li><li>Buck &amp; LDO power design</li><li>MOSFET load switching</li><li>Bring-up &amp; debugging</li><li>Soldering</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Firmware</h3>
+          <ul class="chips">
+            <li>Embedded C</li><li>C++</li><li>STM32 bare-metal (CMSIS)</li><li>FreeRTOS</li><li>DMA &amp; interrupts</li><li>ESP32 / Arduino</li><li>CMake</li><li>OpenOCD</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Protocols &amp; links</h3>
+          <ul class="chips">
+            <li>SPI</li><li>I²C</li><li>UART</li><li>PWM</li><li>ESP-NOW</li><li>MQTT</li><li>MAVLink</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Software</h3>
+          <ul class="chips">
+            <li>Python</li><li>Flask</li><li>ROS 2</li><li>Git</li><li>GitLab CI</li><li>Jira</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Test &amp; automotive</h3>
+          <ul class="chips">
+            <li>Test bench setup</li><li>ECU flashing</li><li>DTS Monaco</li><li>Variant coding</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Mechanical</h3>
+          <ul class="chips">
+            <li>Parametric CAD</li><li>Fusion 360</li><li>Ansys FEA</li><li>FDM &amp; SLA printing</li><li>Bambu Studio</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" aria-labelledby="edu-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="label">Education</span>
+        <h2 id="edu-title">Degree and languages</h2>
+      </div>
+      <div class="edu">
+        <div>
+          <h3>B.Eng. Applied Mechatronics, SRH Hochschule Berlin</h3>
+          <p>Apr 2024 – Aug 2027 · Focus on embedded systems and electronics</p>
+          <p class="grade" style="margin-top:0.75rem">GPA 1.8</p>
+        </div>
+        <div>
+          <h3>Languages</h3>
+          <p>English (C1)<br>German (B2)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <span class="label" style="color:var(--hero-muted)">Contact</span>
+      <h2 id="contact-title">Get in touch</h2>
+      <p>For embedded hardware, firmware or robotics work, email is the fastest way to reach me. Schematics, layouts and source for every project above are on GitHub.</p>
+      <dl class="contact-rows">
+        <div><dt>Email</dt><dd id="email">mustafadalal748@gmail.com</dd><button class="copy" id="copy-email" type="button">Copy</button></div>
+        <div><dt>GitHub</dt><dd><a href="https://github.com/Mustafa0812" target="_blank" rel="noopener">github.com/Mustafa0812</a></dd><span></span></div>
+        <div><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/mustafa-dalal-41abb92a0/" target="_blank" rel="noopener">linkedin.com/in/mustafa-dalal-41abb92a0</a></dd><span></span></div>
+      </dl>
+      <div class="footer-line"><span>Mustafa Dalal · Berlin</span><span>Flight controller renders exported from KiCad 10</span></div>
+    </div>
+  </section>
+</main>
+
+<script>
+  (function () {
+    var btn = document.getElementById('copy-email');
+    var addr = document.getElementById('email');
+    if (!btn || !addr) return;
+    btn.addEventListener('click', function () {
+      var text = addr.textContent.trim();
+      function selectIt() {
+        var r = document.createRange(); r.selectNodeContents(addr);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = 'Selected';
+      }
+      try {
+        navigator.clipboard.writeText(text).then(function () { btn.textContent = 'Copied'; }, selectIt);
+      } catch (e) { selectIt(); }
+      setTimeout(function () { btn.textContent = 'Copy'; }, 2000);
+    });
+  })();
+</script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasIO = 'IntersectionObserver' in window;
+  var hero = document.querySelector('.hero');
+  var slice = Array.prototype.slice;
+
+  /* Scroll reveal */
+  var SEL = '.hero-text > *, .hero-figure, .section-head, .index-scroll, .project-head, .writeup > *, .side > *, .gallery > figure, .minor > article, .job, .skills > div, .edu > div, .contact .wrap > *';
+  if (root.classList.contains('js') && hasIO) {
+    var els = slice.call(document.querySelectorAll(SEL));
+    els.forEach(function (el) {
+      var sibs = slice.call(el.parentNode.children).filter(function (c) { return els.indexOf(c) !== -1; });
+      el.style.setProperty('--d', Math.min(sibs.indexOf(el) * 90, 450) + 'ms');
+    });
+    slice.call(document.querySelectorAll('.spec')).forEach(function (dl) {
+      slice.call(dl.children).forEach(function (row, i) { row.style.setProperty('--i', i); });
+    });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
+  /* Progress bar, rail visibility, board tilt */
+  var bar = document.querySelector('.progress span');
+  var board = document.querySelector('.board');
+  var rail = document.querySelector('.rail');
+  var px = 0, py = 0, ticking = false;
+  function update() {
+    ticking = false;
+    var y = window.pageYOffset || root.scrollTop;
+    var max = root.scrollHeight - window.innerHeight;
+    if (bar) bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
+    var h = hero ? hero.offsetHeight : 1;
+    if (rail) rail.classList.toggle('show', y > h * 0.6);
+    if (board && !reduce) {
+      var f = Math.min(1, y / h);
+      board.style.transform = 'perspective(1200px) rotateX(' + (f * 24 - py * 8).toFixed(2) + 'deg) rotateY(' + (px * 10).toFixed(2) +
+        'deg) translateY(' + (f * 80).toFixed(1) + 'px) scale(' + (1 - f * 0.1).toFixed(3) + ')';
+    }
+  }
+  function req() { if (!ticking) { ticking = true; window.requestAnimationFrame(update); } }
+  window.addEventListener('scroll', req, { passive: true });
+  window.addEventListener('resize', req);
+  if (hero && window.matchMedia('(pointer: fine)').matches) {
+    hero.addEventListener('pointermove', function (e) {
+      var r = hero.getBoundingClientRect();
+      px = (e.clientX - r.left) / r.width - 0.5; py = (e.clientY - r.top) / r.height - 0.5; req();
+    });
+    hero.addEventListener('pointerleave', function () { px = 0; py = 0; req(); });
+  }
+  update();
+
+  /* Rail: highlight the section in view */
+  if (rail && hasIO) {
+    var links = slice.call(rail.querySelectorAll('a')), map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var so = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (l) { l.classList.remove('on'); });
+        if (map[e.target.id]) map[e.target.id].classList.add('on');
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    Object.keys(map).forEach(function (id) { var t = document.getElementById(id); if (t) so.observe(t); });
+  }
+
+  /* Lightbox */
+  var lb = document.getElementById('lightbox'), lbImg = document.getElementById('lb-img'), lbCap = document.getElementById('lb-cap');
+  if (lb && typeof lb.showModal === 'function') {
+    slice.call(document.querySelectorAll('.gallery img')).forEach(function (img) {
+      img.tabIndex = 0; img.setAttribute('role', 'button'); img.classList.add('zoomable');
+      function open() {
+        lbImg.src = img.currentSrc || img.src; lbImg.alt = img.alt;
+        var fig = img.closest('figure'), cap = fig && fig.querySelector('figcaption');
+        lbCap.textContent = cap ? cap.textContent : img.alt;
+        lb.showModal();
+      }
+      img.addEventListener('click', open);
+      img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
+    lb.addEventListener('click', function () { lb.close(); });
+  }
+
+  /* Hero background: PCB traces routed at 45 degrees, with signal pulses */
+  var cv = document.getElementById('traces');
+  if (!cv || !cv.getContext || !hero) return;
+  var ctx = cv.getContext('2d'), W = 0, H = 0, traces = [], t0 = 0, running = false, raf = 0;
+  var DIRS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function build() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var g = 24, n = Math.round(W * H / 24000);
+    traces = [];
+    for (var k = 0; k < n; k++) {
+      var x = Math.round(rnd(0, W) / g) * g, y = Math.round(rnd(0, H) / g) * g;
+      var d = Math.floor(rnd(0, 4)) * 2, pts = [[x, y]], len = 0, segs = Math.floor(rnd(3, 8));
+      for (var s = 0; s < segs; s++) {
+        var steps = Math.floor(rnd(2, 9)), v = DIRS[d];
+        var nx = x + v[0] * g * steps, ny = y + v[1] * g * steps;
+        if (nx < -g || nx > W + g || ny < -g || ny > H + g) break;
+        len += Math.hypot(nx - x, ny - y); x = nx; y = ny; pts.push([x, y]);
+        d = (d + (Math.random() < 0.5 ? 1 : 7)) % 8;
+      }
+      if (pts.length > 1) traces.push({ pts: pts, len: len, delay: rnd(0, 1400), v: rnd(70, 170), phase: Math.random(), pulse: Math.random() < 0.5, w: Math.random() < 0.2 ? 2.4 : 1.2 });
+    }
+  }
+  function walk(tr, L, draw) {
+    var p = tr.pts, acc = 0;
+    if (draw) { ctx.beginPath(); ctx.moveTo(p[0][0], p[0][1]); }
+    for (var i = 1; i < p.length; i++) {
+      var a = p[i - 1], b = p[i], sl = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      if (acc + sl >= L) {
+        var f = (L - acc) / sl, q = [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+        if (draw) ctx.lineTo(q[0], q[1]);
+        return q;
+      }
+      if (draw) ctx.lineTo(b[0], b[1]);
+      acc += sl;
+    }
+    return p[p.length - 1];
+  }
+  function via(x, y) {
+    ctx.beginPath(); ctx.arc(x, y, 3.6, 0, Math.PI * 2);
+    ctx.fillStyle = '#060908'; ctx.fill();
+    ctx.lineWidth = 1.4; ctx.strokeStyle = 'rgba(214, 154, 99, 0.55)'; ctx.stroke();
+  }
+  function frame(now) {
+    if (!t0) t0 = now;
+    var t = now - t0;
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (var i = 0; i < traces.length; i++) {
+      var tr = traces[i];
+      var prog = reduce ? 1 : Math.max(0, Math.min(1, (t - tr.delay) / 1700));
+      if (prog <= 0) continue;
+      var e = 1 - Math.pow(1 - prog, 3);
+      ctx.lineWidth = tr.w; ctx.strokeStyle = 'rgba(108, 199, 159, 0.22)';
+      var end = walk(tr, tr.len * e, true); ctx.stroke();
+      via(tr.pts[0][0], tr.pts[0][1]);
+      if (prog === 1) via(end[0], end[1]);
+      if (!reduce && prog === 1 && tr.pulse) {
+        var pos = (t / 1000 * tr.v + tr.phase * tr.len) % (tr.len * 1.8);
+        if (pos <= tr.len) {
+          var q = walk(tr, pos, false);
+          var gr = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], 12);
+          gr.addColorStop(0, 'rgba(255, 196, 140, 0.95)'); gr.addColorStop(0.35, 'rgba(220, 154, 98, 0.45)'); gr.addColorStop(1, 'rgba(220, 154, 98, 0)');
+          ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(q[0], q[1], 12, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+    }
+  }
+  function loop(now) { frame(now); if (running) raf = window.requestAnimationFrame(loop); }
+  function start() { if (running || reduce) return; running = true; raf = window.requestAnimationFrame(loop); }
+  function stop() { running = false; window.cancelAnimationFrame(raf); }
+  build();
+  if (reduce) frame(0); else start();
+  if (hasIO) new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) start(); else stop(); }); }).observe(hero);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      if (Math.abs(cv.clientWidth - W) > 40 || Math.abs(cv.clientHeight - H) > 80) {
+        build(); t0 = performance.now() - 6000; if (reduce) frame(0);
+      }
+    }, 200);
+  });
+})();
+</script>
+<dialog class="lightbox" id="lightbox" aria-label="Enlarged image">
+  <button class="lb-close" type="button">Close ✕</button>
+  <img id="lb-img" alt="">
+  <p id="lb-cap"></p>
+</dialog>
+</body>
+</html>
